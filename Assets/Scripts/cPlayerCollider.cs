@@ -41,8 +41,8 @@ public class cPlayerCollider : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        GetComponentInChildren<Rigidbody>().velocity = Vector3.back;
-        GetComponentInChildren<Rigidbody>().angularVelocity = Vector3.zero;
+        GetComponent<Rigidbody>().velocity = Vector3.zero;
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
 
     void triggerLantern()
@@ -64,5 +64,7 @@ public class cPlayerCollider : MonoBehaviour
     void Update()
     {
         triggerLantern();
+        GetComponent<Rigidbody>().velocity = new Vector3(0, 0, 0);
+        GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
     }
 }

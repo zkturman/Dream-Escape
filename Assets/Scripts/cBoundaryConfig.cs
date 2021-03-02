@@ -9,8 +9,8 @@ public class cBoundaryConfig : MonoBehaviour
 
     void setupWalls()
     {
-        float xbounds = (this.transform.localScale.x / 2) + 1;
-        float zbounds = (this.transform.localScale.z / 2) + 1;
+        float xbounds = (this.transform.localScale.x / 2);
+        float zbounds = (this.transform.localScale.z / 2);
         float wallHeight = 20;
         float wallThickness = 1;
         float xWallLength = (wallThickness + xbounds) * 2;
