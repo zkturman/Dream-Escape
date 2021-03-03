@@ -101,8 +101,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6526417885568529690}
+  - component: {fileID: 943551856590541319}
   m_Layer: 0
-  m_Name: Mischievous Fairy
+  m_Name: Pixie
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -124,6 +125,31 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &943551856590541319
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6526417885568529691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6289953a64a3a2643b61200db4e7f888, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  monster: {fileID: 0}
+  lanterns: []
+  litLanterns: 0
+  isAwake: 0
+  isMoving: 0
+  isChasing: 0
+  prevTarget: {x: 0, y: 0, z: 0}
+  moveTarget: {x: 0, y: 0, z: 0}
+  aggroRadius: 0a0000000f000000140000001e0000003200000064000000
+  wakeAnimTrigger: MakeWake
+  slowAnimTrigger: MakeWalk
+  fastAnimTrigger: MakeRun
+  monsterState: 0
 --- !u!1001 &6526417886407109844
 PrefabInstance:
   m_ObjectHideFlags: 0

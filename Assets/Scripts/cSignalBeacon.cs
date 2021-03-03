@@ -44,6 +44,7 @@ public abstract class cSignalBeacon : MonoBehaviour
 
         if (lightOn == true && shouldExtinguish == true)
         {
+            Debug.Log("We hit the right update branch in signalbeacon");
             extinguishLight();
         }
     }

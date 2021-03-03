@@ -32,6 +32,7 @@ public class cPlayerCollider : MonoBehaviour
             monsterCollide.GetComponentInParent<AudioSource>().Play();
             changeLevel.LoadNextLevel(cLevelManager.specialLevel.gameover);
         }
+
         if (beaconCollide != null)
         {
 
@@ -50,6 +51,7 @@ public class cPlayerCollider : MonoBehaviour
         if (currentCheckpoint != null) 
         {
             currentCheckpoint.shouldIgnite = true;
+            currentCheckpoint = null;
         }
         
     }

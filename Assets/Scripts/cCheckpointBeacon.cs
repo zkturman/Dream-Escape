@@ -11,8 +11,19 @@ public class cCheckpointBeacon : cSignalBeacon
     {
         if (spotlight != null)
         {
+            base.igniteLight();
             spotlight.enabled = true;
-            lightOn = true;
+            GetComponentInParent<AudioSource>().Play();
+        }
+    }
+
+    public override void extinguishLight()
+    {
+        Debug.Log("extinguishLight was called");
+        if(spotlight != null)
+        {
+            base.extinguishLight();
+            spotlight.enabled = false;
             GetComponentInParent<AudioSource>().Play();
         }
     }

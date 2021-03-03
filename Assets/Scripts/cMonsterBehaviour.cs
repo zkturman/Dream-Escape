@@ -1,18 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class cMonsterBehaviour : MonoBehaviour
 {
-    public GameObject monster;
-    public cWarningBeacon[] lanterns;
-    public int litLanterns = 0;
-    public bool isAwake = false;
-    public bool isMoving = false;
-    public bool isChasing = false;
-    public Vector3 prevTarget = new Vector3(0, 0, 0);
-    public Vector3 moveTarget = new Vector3(0, 0, 0);
-    public int[] aggroRadius = new int[(int)status.ravenous + 1] { 10, 15, 20, 30, 50, 100 };
     public enum status
     {
         absent,
@@ -23,11 +16,22 @@ public class cMonsterBehaviour : MonoBehaviour
         ravenous
     }
 
-    public int numStates = 5;
-
+    public GameObject monster;
+    public cWarningBeacon[] lanterns;
+    public int litLanterns = 0;
+    public bool isAwake = false;
+    public bool isMoving = false;
+    public bool isChasing = false;
+    public Vector3 prevTarget = new Vector3(0, 0, 0);
+    public Vector3 moveTarget = new Vector3(0, 0, 0);
+    public int[] aggroRadius = new int[(int)status.ravenous + 1] { 10, 15, 20, 30, 50, 100 };
+    public string wakeAnimTrigger = "MakeWake";
+    public string slowAnimTrigger = "MakeWalk";
+    public string fastAnimTrigger = "MakeRun";
     public status monsterState = status.absent;
+    protected GameObject forestEnviron;
 
-    void updateMonsterState()
+    public void updateMonsterState()
     {
         litLanterns = 0;
         foreach (cWarningBeacon lan in lanterns)
@@ -35,55 +39,38 @@ public class cMonsterBehaviour : MonoBehaviour
             if (lan.shouldIgnite == true)
             {
                 litLanterns++;
-                //this.GetComponentInChildren<Animator>().SetTrigger("MakeWake");
-                //this.GetComponentInParent<AudioSource>().Play();
             }
         }
-        float ratio = (float)litLanterns / (float)lanterns.Length;
-        monsterState = (status)((float)ratio * (float)numStates);
+        if (lanterns.Length != 0)
+        {
+            float ratio = (float)litLanterns / (float)lanterns.Length;
+            float newState = ((float)ratio * ((float)Enum.GetNames(typeof(status)).Length - 1));
+            monsterState = (status)newState;
+        }
     }
 
-    void wakeMonster()
+    public void wakeMonster()
     {
-        Debug.Log("We're waking now");
-        this.GetComponentInChildren<Renderer>().enabled = true;
-        this.GetComponentInChildren<AudioSource>().enabled = true;
         isAwake = true;
-        this.GetComponentInChildren<Animator>().SetTrigger("MakeWake");
+        renderMonster(true);
+        this.GetComponentInChildren<Animator>().SetTrigger(wakeAnimTrigger);
         this.GetComponentInParent<AudioSource>().Play();
     }
 
-    void moveMonster()
+    protected virtual void moveMonster()
     {
-        Debug.Log("Monster is moving");
+
         if (!isMoving)
         {
-            prevTarget = getCoords(this.transform.position.x, this.transform.position.z);
-            moveTarget = getCoords(Random.Range(-50, 50), Random.Range(-50, 50));
-            Debug.Log("X coord: " + moveTarget.x + " Z coord: " + moveTarget.z);
-            Debug.Log("Prev X coord: " + prevTarget.x + " Prev Z coord: " + prevTarget.z);
-            this.transform.LookAt(moveTarget);
+            setTargetCoords(Random.Range(-50, 50), Random.Range(-50, 50));
             isMoving = true;
 
         }
-        GameObject player = FindObjectOfType<pMovement>().gameObject;
-        float playerDist = Vector3.Distance(this.transform.position, player.transform.position);
-        if (playerDist < aggroRadius[(int)monsterState])
+
+        isChasing = chasePlayer(isChasing);
+
+        if (!GetComponentInChildren<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Scream"))
         {
-            Debug.Log("Now Monster will chase Player");
-            moveTarget = getCoords(player.transform.position.x, player.transform.position.z);
-            this.transform.LookAt(moveTarget);
-            isChasing = true;
-        }
-        if (isChasing && playerDist > aggroRadius[(int)monsterState])
-        {
-            Debug.LogError("We've messed up here");
-            moveTarget = getCoords(Random.Range(-50, 50), Random.Range(-50, 50));
-            this.transform.LookAt(moveTarget);
-            isChasing = false;
-        }
-        if (!this.GetComponentInChildren<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Scream")){
-            Debug.LogError("going wrong here");
             if (Vector3.Distance(this.transform.position, prevTarget) <= Vector3.Distance(moveTarget,prevTarget))
             {
                 setMoveBehaviour();
@@ -96,38 +83,80 @@ public class cMonsterBehaviour : MonoBehaviour
         }
     }
 
-    private Vector3 getCoords(float x, float z)
+    protected virtual bool chasePlayer(bool isChasing)
+    {
+        GameObject player = FindObjectOfType<pMovement>().gameObject;
+        float playerDist = Vector3.Distance(this.transform.position, player.transform.position);
+        if (isChasing)
+        {
+            if (playerDist > aggroRadius[(int)monsterState])
+            {
+                setTargetCoords(Random.Range(-50, 50), Random.Range(-50, 50));
+                return false;
+            }
+            setTargetCoords(player.transform.position.x, player.transform.position.z);
+            return true;
+        }
+
+        else
+        {
+            if (playerDist < aggroRadius[(int)monsterState])
+            {
+                setTargetCoords(player.transform.position.x, player.transform.position.z);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    protected virtual void setTargetCoords(float newX, float newZ)
+    {
+        prevTarget = getCoords(this.transform.position.x, this.transform.position.z);
+        moveTarget = getCoords(newX, newZ);
+        this.transform.LookAt(moveTarget);
+    }
+    protected virtual Vector3 getCoords(float x, float z)
     {
         Vector3 coords = new Vector3(x, 0, z);
         return coords;
     }
     
-    private void setMoveBehaviour()
+    protected virtual void setMoveBehaviour()
     {
-        if (monsterState == status.normal)
+        if (monsterState <= status.angry)
         {
-            this.GetComponentInChildren<Animator>().SetTrigger("MakeWalk");
+            this.GetComponentInChildren<Animator>().SetTrigger(slowAnimTrigger);
             this.transform.Translate(Vector3.forward * (float)0.05);
         }
         if (monsterState >= status.angry)
         {
-            Debug.Log("We should be running now");
-            this.GetComponentInChildren<Animator>().SetTrigger("MakeRun");
+            this.GetComponentInChildren<Animator>().SetTrigger(fastAnimTrigger);
             this.transform.Translate(Vector3.forward * (float)0.1);
         }
 
     }
 
-    // Start is called before the first frame update
-    void Start()
+    protected void renderMonster(bool showRenderer)
     {
-        monster.GetComponentInChildren<Renderer>().enabled = false;
-        monster.GetComponent<AudioSource>().enabled = false;
+        Renderer[] allRenders;
+
+        allRenders = monster.GetComponentsInChildren<Renderer>();
+        foreach (Renderer r in allRenders)
+        {
+            r.enabled = showRenderer;
+        }
+    }
+
+    // Start is called before the first frame update
+    protected virtual void Start()
+    {
+        renderMonster(false);
         lanterns = FindObjectsOfType<cWarningBeacon>();
+        forestEnviron = FindObjectOfType<cBoundaryConfig>().gameObject;
     }
 
     // Update is called once per frame
-    void Update()
+    protected virtual void Update()
     {
         updateMonsterState();
         if (isAwake == false && monsterState > status.absent)
