@@ -11,7 +11,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
     {
         if (!isMoving)
         {
-            setTargetCoords(Random.Range(-50, 50), cruiseAltitude, Random.Range(-50, 50));
+            setTargetCoords(Random.Range(-forestXLength, forestXLength), cruiseAltitude, Random.Range(-forestZLength, forestZLength));
             isMoving = true;
         }
 
@@ -43,7 +43,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         {
             if (targetDistance > aggroRadius[2])
             {
-                setTargetCoords(Random.Range(-50, 50), cruiseAltitude, Random.Range(-50, 50));
+                setTargetCoords(Random.Range(-forestXLength, forestXLength), cruiseAltitude, Random.Range(-forestZLength, forestZLength));
                 return false;
             }
             setTargetCoords(target.x, target.y, target.z);
@@ -104,14 +104,12 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
     private void OnTriggerEnter(Collider other)
     {
         cCheckpointBeacon lantern = null;
-        Debug.Log("We logged a collision");
         if (other.gameObject != null)
         {
             lantern = other.GetComponentInChildren<cCheckpointBeacon>();
         }
         if (lantern != null && lantern.lightOn)
         {
-            Debug.Log("We logged a collision with a lantern");
             lantern.shouldExtinguish = true;
             leftTrigger = false;
         }
@@ -127,6 +125,8 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
     {
         beacons = FindObjectsOfType<cCheckpointBeacon>();
         forestEnviron = FindObjectOfType<cBoundaryConfig>().gameObject;
+        forestXLength = forestEnviron.transform.localScale.x;
+        forestZLength = forestEnviron.transform.localScale.z;
         cruiseAltitude = 3;
     }
 

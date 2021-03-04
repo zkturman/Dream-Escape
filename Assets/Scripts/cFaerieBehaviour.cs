@@ -12,7 +12,6 @@ public class cFaerieBehaviour : cPixieBehaviour
     private void OnTriggerEnter(Collider other)
     {
         cWarningBeacon lantern = null;
-        Debug.Log("We logged a collision");
         if (other.gameObject != null)
         {
             lantern = other.GetComponentInChildren<cWarningBeacon>();
@@ -20,7 +19,6 @@ public class cFaerieBehaviour : cPixieBehaviour
         Debug.Log(lantern);
         if (lantern != null && !lantern.lightOn)
         {
-            Debug.Log("We logged a collision with a warning");
             lantern.shouldIgnite = true;
             leftTrigger = false;
         }
@@ -31,6 +29,8 @@ public class cFaerieBehaviour : cPixieBehaviour
     {
         beacons = FindObjectsOfType<cWarningBeacon>();
         forestEnviron = FindObjectOfType<cBoundaryConfig>().gameObject;
+        forestXLength = forestEnviron.transform.localScale.x;
+        forestZLength = forestEnviron.transform.localScale.z;
         cruiseAltitude = 3;
         aggroDistance = 10;
     }

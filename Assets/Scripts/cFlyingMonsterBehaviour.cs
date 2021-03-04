@@ -14,7 +14,7 @@ public class cFlyingMonsterBehaviour : cMonsterBehaviour
         {
             if (playerDist > aggroRadius[(int)monsterState])
             {
-                setTargetCoords(Random.Range(-50, 50), cruiseAltitude, Random.Range(-50, 50));
+                setTargetCoords(Random.Range(-forestXLength, forestXLength), cruiseAltitude, Random.Range(-forestZLength, forestZLength));
                 return false;
             }
             setTargetCoords(player.transform.position.x, player.transform.position.y, player.transform.position.z);

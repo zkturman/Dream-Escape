@@ -814,7 +814,7 @@ MonoBehaviour:
   numPixies: 2
   numFaeries: 1
   initMonster: 1
-  initGhoul: 1
+  initGhoul: 0
   pixiePrefab: {fileID: 6526417885568529691, guid: 56e294e2d380e2c4f96668ebd07f34f7,
     type: 3}
   faeriePrefab: {fileID: 8889879851237666096, guid: f310ebbbf4707a149949f600b6da1528,

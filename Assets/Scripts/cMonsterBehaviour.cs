@@ -30,6 +30,8 @@ public class cMonsterBehaviour : MonoBehaviour
     public string fastAnimTrigger = "MakeRun";
     public status monsterState = status.absent;
     protected GameObject forestEnviron;
+    protected float forestXLength;
+    protected float forestZLength;
 
     public void updateMonsterState()
     {
@@ -62,7 +64,7 @@ public class cMonsterBehaviour : MonoBehaviour
 
         if (!isMoving)
         {
-            setTargetCoords(Random.Range(-50, 50), Random.Range(-50, 50));
+            setTargetCoords(Random.Range(-forestXLength, forestXLength), Random.Range(-forestZLength, forestZLength));
             isMoving = true;
 
         }
@@ -91,7 +93,7 @@ public class cMonsterBehaviour : MonoBehaviour
         {
             if (playerDist > aggroRadius[(int)monsterState])
             {
-                setTargetCoords(Random.Range(-50, 50), Random.Range(-50, 50));
+                setTargetCoords(Random.Range(-forestXLength, forestXLength), Random.Range(-forestZLength, forestZLength));
                 return false;
             }
             setTargetCoords(player.transform.position.x, player.transform.position.z);
@@ -153,6 +155,8 @@ public class cMonsterBehaviour : MonoBehaviour
         renderMonster(false);
         lanterns = FindObjectsOfType<cWarningBeacon>();
         forestEnviron = FindObjectOfType<cBoundaryConfig>().gameObject;
+        forestXLength = forestEnviron.transform.localScale.x / 2;
+        forestZLength = forestEnviron.transform.localScale.z / 2;
     }
 
     // Update is called once per frame
