@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class cPixieBehaviour : cFlyingMonsterBehaviour
 {
-    cCheckpointBeacon[] checkpoints;
+    public cSignalBeacon[] beacons;
     public bool leftTrigger = true;
+    public float aggroDistance = 20;
     protected override void moveMonster()
     {
         if (!isMoving)
@@ -31,7 +32,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
 
     protected virtual bool chaseLantern(bool isChasing)
     {
-        cCheckpointBeacon lantern = closestLantern();
+        cSignalBeacon lantern = closestLantern(true);
         if (lantern == null)
         {
             return false;
@@ -40,7 +41,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         float targetDistance = Vector3.Distance(transform.position, target);
         if (isChasing)
         {
-            if (targetDistance > aggroRadius[4])
+            if (targetDistance > aggroRadius[2])
             {
                 setTargetCoords(Random.Range(-50, 50), cruiseAltitude, Random.Range(-50, 50));
                 return false;
@@ -50,7 +51,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         }
         else
         {
-            if (targetDistance < aggroRadius[4]){
+            if (targetDistance < aggroRadius[2]){
                 setTargetCoords(target.x, target.y, target.z);
                 return true;
             }
@@ -58,16 +59,16 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         }
     }
 
-    protected virtual cCheckpointBeacon closestLantern()
+    protected virtual cSignalBeacon closestLantern(bool lightOn)
     {
         bool found = false;
         int i = 0;
-        cCheckpointBeacon minLantern = null;
-        while (!found && i < checkpoints.Length)
+        cSignalBeacon minLantern = null;
+        while (!found && i < beacons.Length)
         {
-            if (checkpoints[i].lightOn)
+            if (lightOn == beacons[i].lightOn)
             {
-                minLantern = checkpoints[i];
+                minLantern = beacons[i];
                 found = true;
             }
             else
@@ -82,13 +83,13 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         }
 
         float min = Vector3.Distance(transform.position, minLantern.transform.position);
-        for(i = 0; i < checkpoints.Length; i++)
+        for(i = 0; i < beacons.Length; i++)
         {
-            if (checkpoints[i].lightOn)
+            if (lightOn == beacons[i].lightOn)
             {
-                if (Vector3.Distance(transform.position, checkpoints[i].transform.position) < min)
+                if (Vector3.Distance(transform.position, beacons[i].transform.position) < min)
                 {
-                    minLantern = checkpoints[i];
+                    minLantern = beacons[i];
                 }
             }
         }
@@ -108,7 +109,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
         {
             lantern = other.GetComponentInChildren<cCheckpointBeacon>();
         }
-        if (lantern != null)
+        if (lantern != null && lantern.lightOn)
         {
             Debug.Log("We logged a collision with a lantern");
             lantern.shouldExtinguish = true;
@@ -124,7 +125,7 @@ public class cPixieBehaviour : cFlyingMonsterBehaviour
     // Start is called before the first frame update
     protected override void Start()
     {
-        checkpoints = FindObjectsOfType<cCheckpointBeacon>();
+        beacons = FindObjectsOfType<cCheckpointBeacon>();
         forestEnviron = FindObjectOfType<cBoundaryConfig>().gameObject;
         cruiseAltitude = 3;
     }

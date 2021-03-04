@@ -51,9 +51,13 @@ MonoBehaviour:
   litLanterns: 0
   isAwake: 0
   isMoving: 0
+  isChasing: 0
   prevTarget: {x: 0, y: 0, z: 0}
   moveTarget: {x: 0, y: 0, z: 0}
-  numStates: 5
+  aggroRadius: 0a0000000f000000140000001e0000003200000064000000
+  wakeAnimTrigger: MakeWake
+  slowAnimTrigger: MakeWalk
+  fastAnimTrigger: MakeRun
   monsterState: 0
 --- !u!65 &9107901383856597938
 BoxCollider:
@@ -78,7 +82,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 10d7e2b3e2019394cb781fe2ecb6d92c, type: 3}
+  m_audioClip: {fileID: 8300000, guid: a0c7024145d796640a5026e26753d204, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

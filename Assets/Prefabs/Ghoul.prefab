@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -1488508358787125437}
   - component: {fileID: -275305762013756131}
   m_Layer: 0
-  m_Name: Flying Ghoul
+  m_Name: Ghoul
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,6 +168,7 @@ MonoBehaviour:
   slowAnimTrigger: MakeWalk
   fastAnimTrigger: MakeRun
   monsterState: 0
+  cruiseAltitude: 10
 --- !u!1001 &519251223759350160
 PrefabInstance:
   m_ObjectHideFlags: 0

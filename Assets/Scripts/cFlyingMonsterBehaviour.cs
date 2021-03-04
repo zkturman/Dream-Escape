@@ -42,10 +42,4 @@ public class cFlyingMonsterBehaviour : cMonsterBehaviour
     {
         return new Vector3(x, y, z);
     }
-
-    protected override void Start()
-    {
-        base.Start();
-        cruiseAltitude = transform.position.y;
-    }
 }
